@@ -1,0 +1,19 @@
+{
+  "name": "c_accusation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "server/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "path": "^0.12.7",
+    "socket.io": "^4.5.4",
+    "twitter-api-v2": "^1.13.0"
+  }
+}
