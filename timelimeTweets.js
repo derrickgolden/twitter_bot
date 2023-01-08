@@ -82,7 +82,7 @@ async function getTweets(user){
                 console.log("waiting for results")
                     const tweets = await getTweets(user)
                     Object.assign( results, tweets )
-                    console.log(tweets)
+                    // console.log(tweets)
                 }catch(err){
                     console.error(err)
                     // process.exit(1)
@@ -104,28 +104,37 @@ async function getTweets(user){
             }
         }
     }
-// fameTweets()
+// fameTweets("1610352207811186689")
 
-async function replyToTweet(id,socket){  
+const mediaIDS = ["1611725169634017280","1611728547512553476","1611729402802442245","1611729967364165632","1611730635634229249",
+    "1611731575187578881","1611731994118918144","1611732621075124225","1611732919713685506","1611733258399514624"];
+
+async function replyToTweet(id){ 
+    let images = [];
+    let indexs = [];
+    while(images.length < 4){
+        let index = Math.floor(Math.random()*mediaIDS.length)
+        if(!indexs.includes(index)){
+            indexs.push(index);
+            images.push(mediaIDS[index]);
+        }
+    }
+
     try{
-        // const clientID = await twitterClient.v1.uploadMedia("./images/IMG_20211218_182433 (1).jpg")
+        // const clientID = await twitterClient.v1.uploadMedia("./images/betty_complete.JPG")
         const response = await twitterClient.v2.tweet({
-            "media": {
-                "media_ids": ["1609951670611415043","1609952075680714752","1609959273840377861","1609960944339193856"]},
-            
-            "text": "For a timeless painting or drawing as unique gift for loved one, contant 0714475702 from 3K",
-                    "reply": {
-                    "in_reply_to_tweet_id": `${id}`
-                }
+            "media": { "media_ids": images },
+            "text": "For a timeless painting or drawing as unique gift for loved one, contant 0714475702 from 3K depending on size.", 
+            "reply": { "in_reply_to_tweet_id": `${id}` }
         })
         console.log(response)
         return('replied',{res:response.data.text,id})
-
+        // console.log(clientID);
     }catch(err){
-        return("error while replying")
         console.log(err)
+        return("error while replying")
     }
 }
-
+// replyToTweet('1611778022775873536');
 
 module.exports = {fameTweets, replyToTweet}

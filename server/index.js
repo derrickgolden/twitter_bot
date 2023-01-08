@@ -10,7 +10,7 @@ const {fameTweets, replyToTweet} = require('../timelimeTweets')
 // const {replyToTweet} = require('../replyTweet')
 
 // setting server
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8090;
 const app = express()
 const server = http.createServer(app)
 const io = socketIo(server)
@@ -26,7 +26,7 @@ io.on('connection', async (socket)=>{
         console.log(id)
         let resp;
         try{
-            resp = replyToTweet(id,io)
+            resp = replyToTweet(id);
         }catch(err){
             console.log(err)
             resp = "error while replying"
