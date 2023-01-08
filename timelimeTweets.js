@@ -124,7 +124,7 @@ async function replyToTweet(id){
         // const clientID = await twitterClient.v1.uploadMedia("./images/betty_complete.JPG")
         const response = await twitterClient.v2.tweet({
             "media": { "media_ids": images },
-            "text": "For a timeless painting or drawing as unique gift for loved one, contant 0714475702 from 3K depending on size.", 
+            "text": "For a timeless, unique hand drawn portrait to gift loved one, call and whatsapp on 0714475702 from 3K depending on size.", 
             "reply": { "in_reply_to_tweet_id": `${id}` }
         })
         console.log(response)
