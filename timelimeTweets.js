@@ -2,8 +2,8 @@ const {TwitterApi} = require('twitter-api-v2');
 const config = require('dotenv').config();
 // const {sendToWhatsapp} = require('./whatsapp/index');
 
-const exceptWords = ["murder","death"]
-const user_ids = [{name:"@WilliamsRuto",id:"333935142",posted:false},{name:"@HonAdenDuale",id:"561133976",posted:false},{name:"@MikeSonko",id:"1462725421",posted:false},
+const exceptWords = ["murder","death",'{name:"@DailyLoud",id:"452540168"}']
+const user_ids = [{name:"@WilliamsRuto",id:"333935142",posted:false},{name:"@HonAdenDuale",id:"561133976"},{name:"@MikeSonko",id:"1462725421",posted:false},
     {name:"@kibeandy",id:"877150626911846402"},{name:"@MigunaMiguna",id:"407781903"},{name:"@scherargei",id:"474948207"},
     {mame:"@crazy_kennar",id:"898079458074263552"},{name:"@MohaJichoPevu",id:"154036419"},{name:"@NdindiNyoro",id:"301467105"},
     {name:"@susankihika",id:"1554189314"},{name:"@MillicentOmanga",id:"1005535676"},{name:"@kipmurkomen",id:"256136003"},
@@ -26,8 +26,8 @@ const user_ids = [{name:"@WilliamsRuto",id:"333935142",posted:false},{name:"@Hon
     {name:"@Mercymasai3",id:"1256975220759564293"},{name:"@MutahiNgunyi",id:"320316357"},{name:"@citizentvkenya",id:"70394965"},
     {name:"@EliudKipchoge",id:"2471739785"},{name:"@AlinurMohamed_",id:"924270027557269504"},{name:"@gabrieloguda",id:"1615205449"},
     {name:"@paulinenjoroge",id:"253211316"},{name:"@amerix",id:"34908371"},{name:"@MwendiaJnr",id:"1280200427997483009"},
-    {name:"@DailyLoud",id:"452540168"},{name:"@DavidNdii",id:"715851056148791296"},{name:"@HonWangari",id:"1555984939"},
-    {name:"@Lupita_Nyongo",id:"2155649270"},{name:"@SABINACHEGE",id:"631041552"},{name:"@AzziadNasenya",id:"@AzziadNasenya"},
+    {name:"@DavidNdii",id:"715851056148791296"},{name:"@HonWangari",id:"1555984939"},
+    {name:"@Lupita_Nyongo",id:"2155649270"},{name:"@SABINACHEGE",id:"631041552"},{name:"@AzziadNasenya",id:"1157045875857940480"},
     {name:"@BettyMKyallo",id:"82821779"},{name:"@flaqo411",id:"1184825255531077641"},{name:"@KenyaPower",id:"1485838501"},
     {name:"@CarenKibbett",id:"2783910437"},{name:"@RodgersKipembe",id:"1105007266850316288"},{name:"@bevalynekwambo3",id:"874003566284992514"},
     {name:"@tom_adwar",id:"1166752238838136833"},{name:"@hellenjeriKe",id:"1305353681446096896"},{name:"@MoiGideon",id:"1072907593"}];
@@ -65,43 +65,49 @@ async function getTweets(user){
 
     // get prominate tweets 
     async function fameTweets(socket){
-        let results = [{
-            text: "We are determined to protect Kenya's reputation and heritage as an athletics powerhouse. We are ready to work together with athletes, their contacts and partners to confront the doping menace and protect the integrity of our champions. https://t.co/NLhX8oJ5N9",
-            edit_history_tweet_ids: [ '1610939506227843072' ],
-            public_metrics: {
-              retweet_count: 19,
-              reply_count: 10,
-              like_count: 166,
-              quote_count: 3
-            },
-            id: '1610939506227843072',
-            created_at: '2023-01-05T10:01:22.000Z'
-          }];
+        // {
+        //     text: "We are determined to protect Kenya's reputation and heritage as an athletics powerhouse. We are ready to work together with athletes, their contacts and partners to confront the doping menace and protect the integrity of our champions. https://t.co/NLhX8oJ5N9",
+        //     edit_history_tweet_ids: [ '1610939506227843072' ],
+        //     public_metrics: {
+        //       retweet_count: 19,
+        //       reply_count: 10,
+        //       like_count: 166,
+        //       quote_count: 3
+        //     },
+        //     id: '1610939506227843072',
+        //     created_at: '2023-01-05T10:01:22.000Z'
+        //   }
+        let results = [];
         for(let user of user_ids){
             try{
-                console.log("waiting for results")
+                // console.log("waiting for results")
                     const tweets = await getTweets(user)
-                    Object.assign( results, tweets )
-                    // console.log(tweets)
+                    if(tweets){
+                        // console.log(tweets)
+                        for(let tweet of tweets){
+                            let replyCount = Number(tweet.public_metrics.reply_count);
+                            let likeCount = Number(tweet.public_metrics.like_count);
+                            let replyUserId = tweet.in_reply_to_user_id;
+                            if( replyCount >= 10 &&  likeCount > 50 && !replyUserId){
+                                // replyToTweet(result.id);
+                                // sendToWhatsapp(result)
+                                console.log("sent results to browser")
+                                socket.emit("fameTweet", tweet)
+                                Object.assign( results, tweet )
+                            }
+                        }
+                    }
                 }catch(err){
                     console.error(err)
                     // process.exit(1)
                 }
             }
-        if(results){
-            for(const result of results){
-                console.log(result)
-                let replyCount = Number(result.public_metrics.reply_count);
-                let likeCount = Number(result.public_metrics.like_count);
-                let replyUserId = result.in_reply_to_user_id;
-                if( replyCount >= 10 &&  likeCount > 50 && !replyUserId){
-
-                    // replyToTweet(result.id);
-                    // sendToWhatsapp(result)
-                    console.log("sent results to browser")
-                    socket.emit("fameTweet", result)
-                }
-            }
+        if(results.length<1){
+            socket.emit("fameTweet", {text: "No tweets at the moment",
+            edit_history_tweet_ids: [ '1610939506227843072' ],
+            id: '1610939506227843072',
+            created_at: '2023-01-05T10:01:22.000Z'
+          })
         }
     }
 // fameTweets("1610352207811186689")
