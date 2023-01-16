@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "../../../Gallery"
+		},
+		{
+			"path": "../../../Wordpress/Word-Press"
+		},
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "Gallery"
+	}
+}

@@ -28,6 +28,7 @@
 
         </div>
     </div>
+
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js" 
         integrity="sha512-YeeA/Qxn5hYdkukScTCNNOhTrv1C2RubAGButJ1rmgQwZf/HdRaCGl+JAVkqsqaNRaYNHdheiuKKuPf9mDcqKg==" 
@@ -96,29 +97,28 @@
                 <h6 class="card-subtitle mb-2 text-muted">${tweetData.username}</h6>
                 <h6 class="card-subtitle mb-2 text-muted">${tweetData.time}</h6>
                 <p id="${tweetData.id}p"></p>
+                <textarea name="reply" id="" cols="40" rows="3"></textarea> <br>
                 <a href="https://twitter.com/${tweetData.username}/status/${tweetData.id}" target="_blank" 
                 class="btn btn-primary mt-3"> <i class="fab fa-twitter">Go To Twitter</i></a>
                 <button type="button" id=${tweetData.id} class="btn btn-info mt-3">REPLY</button>
             </div>
             `
             tweetEl.querySelector("button").addEventListener('click',(e)=>{
-                console.log(e.target)
+                let text = tweetEl.querySelector('textarea').value;
+                let id = e.target.id;
+                console.log(text,id)
                 e.target.innerHTML = "Sent"
-                socket.emit('reply',e.target.id)
+                socket.emit('reply',{text,id})
                 socket.on('replied', (response)=>{
                     e.target.innerHTML = "Replied"
-                    // console.log("resp: ", response)
-                    // tweetEl.getElementById(`${e.target.id}p`).innerHTML = response.data;
+                    console.log("resp: ", response)
+                    document.getElementById(`${response.id.id}p`).innerHTML = JSON.stringify(response.data.res);
                 })
             })
-
-                socket.on('replied', (response)=>{
-                        console.log("resp: ", response)
-                        document.getElementById(`${response.id}p`).innerHTML = response.data;
-                    })
             
             tweetStream.appendChild(tweetEl)  
         })
+        // tweetEl.getElementById(`${e.target.id}p`).innerHTML = JSON.stringify(response.data.res);
 
     </script>
 </body>

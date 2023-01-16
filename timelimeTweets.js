@@ -2,8 +2,9 @@ const {TwitterApi} = require('twitter-api-v2');
 const config = require('dotenv').config();
 // const {sendToWhatsapp} = require('./whatsapp/index');
 
-const exceptWords = ["murder","death",'{name:"@DailyLoud",id:"452540168"}']
-const user_ids = [{name:"@WilliamsRuto",id:"333935142",posted:false},{name:"@HonAdenDuale",id:"561133976"},{name:"@MikeSonko",id:"1462725421",posted:false},
+const exceptWords = ["murder","death",'{name:"@DailyLoud",id:"452540168"}',"condolences"]
+const user_id = [{name:"@kibeandy",id:"877150626911846402"}]
+const user_ids = [{name:"@WilliamsRuto",id:"333935142"},{name:"@HonAdenDuale",id:"561133976"},{name:"@MikeSonko",id:"1462725421"},
     {name:"@kibeandy",id:"877150626911846402"},{name:"@MigunaMiguna",id:"407781903"},{name:"@scherargei",id:"474948207"},
     {mame:"@crazy_kennar",id:"898079458074263552"},{name:"@MohaJichoPevu",id:"154036419"},{name:"@NdindiNyoro",id:"301467105"},
     {name:"@susankihika",id:"1554189314"},{name:"@MillicentOmanga",id:"1005535676"},{name:"@kipmurkomen",id:"256136003"},
@@ -53,7 +54,7 @@ async function getTweets(user){
             start_time: `${startTime}` ,exclude:['replies','retweets']})
     
             // console.log("timeline", timeline)
-            const data = JSON.stringify(timeline._realData.data)
+            const data = timeline._realData.data
             if(data){
                 return(timeline._realData.data);
             }
@@ -102,7 +103,7 @@ async function getTweets(user){
                     // process.exit(1)
                 }
             }
-        if(results.length<1){
+        if(results.length == 0){
             socket.emit("fameTweet", {text: "No tweets at the moment",
             edit_history_tweet_ids: [ '1610939506227843072' ],
             id: '1610939506227843072',
@@ -112,29 +113,39 @@ async function getTweets(user){
     }
 // fameTweets("1610352207811186689")
 
-const mediaIDS = ["1611725169634017280","1611728547512553476","1611729402802442245","1611729967364165632","1611730635634229249",
-    "1611731575187578881","1611731994118918144","1611732621075124225","1611732919713685506","1611733258399514624"];
+const messages = [
+{message: "For amazing hand drawn portrait of yourself or a unique beautiful gift for loved one, like this ones, WhatsApp me on 0714475702. Check more of my works on https://goldenarts.onrender.com ", 
+mediaIDS: ["1615020706315603974","1615022031984107520","1615024958320611328","1614961240719212547"] },
+{message: "Art is amazing idea to gift someone on birthdays or anniversaries. Check some of amazing works that I do at my website, https://goldenarts.onrender.com For orders WhatsApp me on 0714475702 ",
+mediaIDS: ["1615020706315603974","1615022031984107520","1615024958320611328","1614961240719212547"] },
+{message: '"There is no greater work of Art than a great Portrait." Henry James. Time to get something great on your wall. This are some of my works, for more click the link https://goldenarts.onrender.com To order WhatsApp 0714475702 ',
+mediaIDS: ["1615020706315603974","1615043067622395914","1615035225913819170","1615036874329817114"] },
+{message: "Art is forever. Whether it's a painting for your living room, or gift for someone, I enjoy bringing face to life. Click the link to see more amaizing works i have done https://goldenarts.onrender.com ",
+mediaIDS: ["1614960655995379713","1615043067622395914","1615035225913819170","1615036874329817114"] },
+{message: "I take pride in delivering high quality, detailed artwork that my clients will cherish for years to come. Click the link to see what I do https://goldenarts.onrender.com ",
+mediaIDS: ["1614960655995379713","1614968390199787521","1615021509755404288","1615013005070057473"] },
+{message: "Uzuri ya drawing ukipea mtu kaa gift, hatawai sahau, coz its always on the wall to be seen everyday. WhatsApp me I do a nice job for you. 0714475702. click the link to see other drawings https://goldenarts.onrender.com ",
+mediaIDS: ["1614960655995379713","1614968390199787521","1614969226120372225","1614958868257177602"] }
+];
 
-async function replyToTweet(id){ 
-    let images = [];
-    let indexs = [];
-    while(images.length < 4){
-        let index = Math.floor(Math.random()*mediaIDS.length)
-        if(!indexs.includes(index)){
-            indexs.push(index);
-            images.push(mediaIDS[index]);
-        }
-    }
+// const ids = {black_beauty_complete:"1614958868257177602",black_beauty_inc:"1615026923389714441",kuria_complete:"1614960655995379713",
+// daisy_complete:"1614961240719212547",twin_half_face:"1615035225913819170",twin_face_comp:"1615036874329817114",
+// col_family1_complete:"1614968390199787521",black_beauty_inc:"1614969226120372225",sm_law_kid_comp:"1615013005070057473",
+// betty_complete:"1615020706315603974",sm_law_kid_face:"1615021509755404288",lawyer1_complete:"1615022031984107520",
+// daisy_half_face:"1615024958320611328",NJUGUSH:"1615043067622395914"}
 
+async function replyToTweet(details){ 
+    // [betty,kuria,lawyer,col, BLACK,DAISY,TWIN,LAW]
     try{
-        // const clientID = await twitterClient.v1.uploadMedia("./images/betty_complete.JPG")
+        // const clientID = await twitterClient.v1.uploadMedia("./images/NJUGUSH.jpg")
+        const text = messages[Math.floor(Math.random()*messages.length)]
         const response = await twitterClient.v2.tweet({
-            "media": { "media_ids": images },
-            "text": "For a timeless, unique hand drawn portrait to gift loved one, call and whatsapp on +254714475702 from 3K depending on size.", 
-            "reply": { "in_reply_to_tweet_id": `${id}` }
+            "media": { "media_ids": text.mediaIDS },
+            "text": `${details.text} ${text.message}`,
+            "reply": { "in_reply_to_tweet_id": `${details.id}` }
         })
-        console.log(response)
-        return('replied',{res:response.data.text,id})
+        console.log(text.message)
+        return('replied',{res:response.data.text, id:details.id})
         // console.log(clientID);
     }catch(err){
         console.log(err)

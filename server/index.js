@@ -15,6 +15,9 @@ const app = express()
 const server = http.createServer(app)
 const io = socketIo(server)
 
+app.use(express.static('public'))
+app.use("/css", express.static(__dirname + 'public/css'))
+
 app.use('/',(req,res)=>{
     res.sendFile(path.resolve(__dirname,'../','client','index.html'))
 })
