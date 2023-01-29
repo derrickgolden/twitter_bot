@@ -5,7 +5,7 @@ const config = require('dotenv').config();
 const exceptWords = ["murder","death",'{name:"@DailyLoud",id:"452540168"}',"condolences"]
 const user_id = [{name:"@kibeandy",id:"877150626911846402"}]
 const user_ids = [{name:"@WilliamsRuto",id:"333935142"},{name:"@HonAdenDuale",id:"561133976"},{name:"@MikeSonko",id:"1462725421"},
-    {name:"@kibeandy",id:"877150626911846402"},{name:"@MigunaMiguna",id:"407781903"},{name:"@scherargei",id:"474948207"},
+    {name:"@MigunaMiguna",id:"407781903"},{name:"@scherargei",id:"474948207"},
     {mame:"@crazy_kennar",id:"898079458074263552"},{name:"@MohaJichoPevu",id:"154036419"},{name:"@NdindiNyoro",id:"301467105"},
     {name:"@susankihika",id:"1554189314"},{name:"@MillicentOmanga",id:"1005535676"},{name:"@kipmurkomen",id:"256136003"},
     {name:"@ledamalekina",id:"2466645955"},{name:"@KBonimtetezi",id:"3394123895"},{name:"@makaumutua",id:"45182880"},
